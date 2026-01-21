@@ -1,0 +1,12 @@
+{# gecat/templates/home/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil GECAT{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>{{ message }}</h1>
+        <p class="lead">Ce message provient du controlleur : <code>{{ controller_name }}</code></p>
+        <p>Bienvenue sur notre application de gestion de courrier administratif.</p>
+    </div>
+{% endblock %}
