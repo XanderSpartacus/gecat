@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvelle notification GECAT</title>
+</head>
+<body>
+<h2>Notification de nouveau courrier</h2>
+<p>Bonjour {{ userName }},</p>
+
+<p>Un nouveau courrier a été créé :</p>
+<ul>
+    <li><strong>Numéro :</strong> {{ courrier.numero }}</li>
+    <li><strong>Objet :</strong> {{ courrier.objet }}</li>
+    <li><strong>Date :</strong> {{ courrier.dateSignature|date('d/m/Y') }}</li>
+    <li><strong>Type :</strong> {{ courrier.type }}</li>
+</ul>
+
+<p>Merci de consulter l’application GECAT pour plus de détails.</p>
+
+<p>Cordialement,<br>Équipe GECAT</p>
+</body>
+</html>
