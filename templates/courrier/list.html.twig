@@ -26,6 +26,10 @@
                 <div class="alert alert-danger mt-3">{{ message }}</div>
             {% endfor %}
 
+            {% for message in app.flashes('warning') %}
+                <div class="alert alert-warning mt-3">{{ message }}</div>
+            {% endfor %}
+
             <!-- En-tête de page -->
             <div class="page-header">
                 <h2 class="page-title">Liste des courriers</h2>
@@ -78,10 +82,64 @@
                 </table>
 
                 <!-- Pagination (à dynamiser plus tard) -->
+                {#
+                <nav>
+                    <ul class="pagination">
+                        {% for p in 1..totalPages %}
+                            <li class="page-item {{ p == page ? 'active' }}">
+                                <a class="page-link" href="{{ path('app_courrier_list', { page: p }) }}">
+                                    {{ p }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
                 <div class="pagination-container m-3">
                     <div class="pagination-info">
                         Affichage de 1 à {{ courriers|length }} sur {{ courriers|length }} courriers
                     </div>
+                </div>
+                #}
+
+                {# Pagination #}
+                <nav class="d-flex justify-content-center">
+                    <ul class="pagination">
+                        {# Bouton précédent #}
+                        <li class="page-item {{ page == 1 ? 'disabled' }}">
+                            <a class="page-link"
+                               href="{{ path('app_courrier_list', { page: page - 1 }) }}">
+                                Précédent
+                            </a>
+                        </li>
+
+                        {% for p in 1..totalPages %}
+                            <li class="page-item {{ p == page ? 'active' }}">
+                                <a class="page-link"
+                                   href="{{ path('app_courrier_list', { page: p }) }}">
+                                    {{ p }}
+                                </a>
+                            </li>
+                        {% endfor %}
+
+                        {# Bouton suivant #}
+                        <li class="page-item {{ page == totalPages ? 'disabled' }}">
+                            <a class="page-link"
+                               href="{{ path('app_courrier_list', { page: page + 1 }) }}">
+                                Suivant
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                {# Texte d’information pagination #}
+                <div class="text-center text-muted mt-2">
+                    Affichage de
+                    {{ (page - 1) * limit + 1 }}
+                    à
+                    {{ (page - 1) * limit + courriers|length }}
+                    sur
+                    {{ totalItems }}
+                    courriers
                 </div>
             </div>
         </div>

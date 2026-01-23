@@ -1,0 +1,102 @@
+{{ form_start(form) }}
+<div class="form-container">
+
+    <!-- Numéro -->
+    <div class="form-row">
+        <div class="form-group">
+            {{ form_label(form.reference, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.reference, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        {# Un groupe vide pour garder l'alignement à deux colonnes si le design le requiert #}
+        <div class="form-group"></div>
+    </div>
+
+    <!-- Objet -->
+    <div class="form-row">
+        <div class="form-group full-width">
+            {{ form_label(form.objet, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.objet, {'attr': {'class': 'form-control', 'placeholder': ''}}) }}
+        </div>
+    </div>
+
+    <!-- Contenu -->
+    <div class="form-row">
+        <div class="form-group full-width">
+            {{ form_label(form.contenu, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.contenu, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+
+    <!-- Émetteur et Destinataire -->
+    <div class="form-row">
+        <div class="form-group">
+            {{ form_label(form.expediteur, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.expediteur, {'attr': {'class': 'form-control', 'placeholder': ''}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.destinataire, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.destinataire, {'attr': {'class': 'form-select'}}) }}
+        </div>
+    </div>
+
+    <!-- Type et Date de signature -->
+    <div class="form-row">
+        <div class="form-group">
+            {{ form_label(form.statut, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.dateReception, null, {'label_attr': {'class': 'form-label'}}) }}
+            <div class="date-input-group">
+                {{ form_widget(form.dateReception, {'attr': {'class': 'form-control'}}) }}
+                {# <i class="bi bi-calendar3 calendar-icon"></i> #} {# Supprimé car le navigateur le gère #}
+            </div>
+        </div>
+    </div>
+
+    <!-- Nature -->
+    <div class="form-row">
+        <div class="form-group full-width">
+            <label class="form-label" for="{{ form.nature.vars.id }}">Nature<span class="required">*</span></label>
+            {{ form_widget(form.nature, {'attr': {'class': 'form-select'}}) }}
+        </div>
+    </div>
+
+    <!-- Gestionnaire -->
+    <div class="form-row">
+        <div class="form-group full-width">
+            {{ form_label(form.gestionnaire, 'Gestionnaire', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.gestionnaire, {'attr': {'class': 'form-select'}}) }}
+        </div>
+    </div>
+
+    <!-- Responsable administratif -->
+    <div class="form-row">
+        <div class="form-group full-width">
+            {{ form_label(form.responsable, 'Responsable administratif', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.responsable, {'attr': {'class': 'form-select'}}) }}
+        </div>
+    </div>
+
+    <!-- Pièces jointes (simulation pour le design) -->
+    <div class="form-row">
+        <div class="form-group full-width">
+            <label class="form-label">Pièces jointes</label>
+            <div>
+                <button type="button" class="btn-add-file">
+                    <i class="bi bi-plus-lg"></i>
+                    Ajouter une pièce jointe
+                </button>
+                {# input type="file" id="fileInput" name="pieces_jointes[]" multiple style="display: none;" onchange="displayFiles()" #}
+                <div id="fileList" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="form-actions">
+        <button type="submit" class="btn-action btn-enregistrer">{{ button_label|default('Enregistrer') }}</button>
+        <a href="{{ path('app_courrier_list') }}" class="btn-action btn-annuler">Annuler</a>
+    </div>
+</div>
+{{ form_end(form) }}

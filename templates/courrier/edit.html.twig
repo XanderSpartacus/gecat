@@ -21,11 +21,13 @@
         <div class="container">
             <!-- En-tête de page -->
             <div class="page-header">
-                <h2 class="page-title">Modifier le courrier #</h2>
+                <h2 class="page-title">Modifier le courrier #{{ courrier.id }}</h2>
             </div>
 
+            {# include('courrier/_form.html.twig') #}
+
             <!-- Formulaire -->
-            {# include('courrier/_form.html.twig', {'button_label': 'Enregistrer les modifications'}) #}
+            {{ include('courrier/_form.html.twig', {'button_label': 'Enregistrer les modifications'}) }}
         </div>
     </div>
 {% endblock %}
