@@ -16,6 +16,24 @@ class CourrierRepository extends ServiceEntityRepository
         parent::__construct($registry, Courrier::class);
     }
 
+    public function countAll(): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countByStatut(string $statut): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->andWhere('c.statut = :statut')
+            ->setParameter('statut', $statut)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Courrier[] Returns an array of Courrier objects
     //     */

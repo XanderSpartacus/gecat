@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Repository\CourrierRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,9 +18,9 @@ class CourrierController extends AbstractController
     }
 
     #[Route('/courriers', name: 'app_courrier_list')]
-    public function list(): Response
+    public function list(CourrierRepository $courrierRepository): Response
     {
-        $courriers = [];
+        $courriers = $courrierRepository->findAll();
         return $this->render('courrier/list.html.twig', [
             'courriers' => $courriers
         ]);
