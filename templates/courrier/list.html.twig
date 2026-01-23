@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des courriers - GECAT{% endblock %}
+
+{% block body %}
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-custom">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Tableau de bord</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Liste des courriers</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="main-content">
+        <div class="container">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success mt-3">{{ message }}</div>
+            {% endfor %}
+
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger mt-3">{{ message }}</div>
+            {% endfor %}
+
+            <!-- En-tête de page -->
+            <div class="page-header">
+                <h2 class="page-title">Liste des courriers</h2>
+                <a href="{{ path('app_courrier_new') }}" class="btn btn-nouveau">
+                    <i class="bi bi-plus-lg"></i>
+                    Nouveau courrier
+                </a>
+            </div>
+
+            <!-- Tableau des courriers -->
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                    <tr>
+                        <th>Référence</th>
+                        <th>Objet</th>
+                        <th>Statut</th>
+                        <th>Destinataire</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if courriers is empty %}
+                        <tr>
+                            <td colspan="5" class="text-center p-4">Aucun courrier enregistré pour le moment.</td>
+                        </tr>
+                    {% else %}
+                        {% for courrier in courriers %}
+                            <tr>
+                                <td>{{ courrier.reference }}</td>
+                                <td>{{ courrier.objet }}</td>
+                                <td><span class="badge-{{ courrier.statut }}">{{ courrier.statut|replace({'_': ' '})|capitalize }}</span></td>
+                                <td>{{ courrier.destinataire }}</td>
+                                <td>
+                                    <a href="{{ path('app_courrier_show', {'id': courrier.id}) }}" class="btn btn-action btn-voir">
+                                        <i class="bi bi-eye-fill"></i>
+                                        Voir
+                                    </a>
+                                    <form method="post" action="{{ path('app_courrier_delete', {'id': courrier.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce courrier ?');" style="display:inline-block;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ courrier.id) }}">
+                                        <button class="btn btn-action btn-supprimer">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
+
+                <!-- Pagination (à dynamiser plus tard) -->
+                <div class="pagination-container m-3">
+                    <div class="pagination-info">
+                        Affichage de 1 à {{ courriers|length }} sur {{ courriers|length }} courriers
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

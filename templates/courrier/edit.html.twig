@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le Courrier # - GECAT{% endblock %}
+
+{% block body %}
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-custom">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Tableau de bord</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_courrier_list') }}">Liste des courriers</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Modifier le courrier #</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="main-content">
+        <div class="container">
+            <!-- En-tête de page -->
+            <div class="page-header">
+                <h2 class="page-title">Modifier le courrier #</h2>
+            </div>
+
+            <!-- Formulaire -->
+            {# include('courrier/_form.html.twig', {'button_label': 'Enregistrer les modifications'}) #}
+        </div>
+    </div>
+{% endblock %}
+

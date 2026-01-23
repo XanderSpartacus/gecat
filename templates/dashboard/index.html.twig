@@ -1,0 +1,84 @@
+{# gecat/templates/home/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord - GECAT{% endblock %}
+
+{% block body %}
+    <div class="main-content">
+        <div class="container">
+            <h2 class="page-title">Tableau de bord</h2>
+
+            {# Carte Statistiques #}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stats-card card-blue">
+                        <i class="bi bi-envelope"></i>
+                        <h3>12</h3>
+                        <p>Courriers au total</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card card-blue">
+                        <i class="bi bi-envelope"></i>
+                        <h3>4</h3>
+                        <p>Courriers entrants</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card card-blue">
+                        <i class="bi bi-envelope"></i>
+                        <h3>12</h3>
+                        <p>Courriers sortants</p>
+                    </div>
+                </div>
+            </div>
+
+            {# Derniers Courriers #}
+            <!-- Derniers courriers -->
+            <h3 class="section-title">Derniers courriers</h3>
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                    <tr>
+                        <th>Numéro</th>
+                        <th>Objet</th>
+                        <th>Émetteur</th>
+                        <th>Type</th>
+                        <th>Date de signature</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>2024-012</td>
+                        <td>Demande de stage</td>
+                        <td>M. Mbombe Cisseégui</td>
+                        <td><span class="badge-entrant">Entrant</span></td>
+                        <td>23/04/2024</td>
+                    </tr>
+                    <tr>
+                        <td>2024-011</td>
+                        <td>Bon de commande</td>
+                        <td>Direction Genéral. Équipements</td>
+                        <td><span class="badge-sortant">Sortant</span></td>
+                        <td>22/04/2024</td>
+                    </tr>
+                    <tr>
+                        <td>2024-010</td>
+                        <td>Transmission note interne</td>
+                        <td>Cabinet Directeur Régional</td>
+                        <td><span class="badge-interne">Interne</span></td>
+                        <td>21/04/2024</td>
+                    </tr>
+                    <tr>
+                        <td>2024-009</td>
+                        <td>Facture N°456789</td>
+                        <td>SOCOMEX S.A.</td>
+                        <td><span class="badge-entrant">Entrant</span></td>
+                        <td>20/04/2024</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
