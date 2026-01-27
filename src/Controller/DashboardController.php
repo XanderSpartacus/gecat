@@ -6,7 +6,9 @@ use App\Repository\CourrierRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[isGranted('ROLE_ADMIN')]
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard', name: 'app_dashboard')] // Notre route, le GPS de l'application
