@@ -1,0 +1,40 @@
+/* ========================================
+   LAYOUT GÉNÉRAL DE LA PAGE
+   ======================================== */
+
+body {
+    background-color: #e8ecf1;
+}
+
+.main-content {
+    padding: 40px 0;
+}
+
+/* En-tête de page */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.page-title {
+    color: #2c3e50;
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .btn-nouveau {
+        width: 100%;
+        justify-content: center;
+    }
+}

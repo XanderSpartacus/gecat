@@ -1,0 +1,47 @@
+/* ========================================
+   AUTOCOMPLETE
+   ======================================== */
+
+/* Wrapper pour l'autocomplete */
+.autocomplete-wrapper {
+    position: relative;
+}
+
+/* Liste d'autocomplete */
+.autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ced4da;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: -5px;
+}
+
+/* Items de la liste */
+.autocomplete-list .list-group-item {
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 0.95rem;
+}
+
+.autocomplete-list .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-list .list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.autocomplete-list .list-group-item:active {
+    background-color: #e9ecef;
+}

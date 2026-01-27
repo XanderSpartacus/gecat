@@ -19,6 +19,7 @@ class CourrierRepository extends ServiceEntityRepository
 
     public function findPaginated(int $page, int $limit): Paginator
     {
+        // pagination sans filtre
         $query = $this->createQueryBuilder('c')
             ->orderBy('c.dateReception', 'DESC')
             ->getQuery()
@@ -27,6 +28,36 @@ class CourrierRepository extends ServiceEntityRepository
 
         return new Paginator($query, true);
     }
+
+    public function findFilteredPaginated(array $filters, int $page, int $limit): Paginator
+    {
+        // pagination avec filtres
+        $qb = $this->createQueryBuilder('c')
+            ->orderBy('c.dateReception', 'DESC');
+
+        foreach (['destinataire', 'statut', 'nature', 'gestionnaire', 'responsable'] as $field) {
+            if (!empty($filters[$field])) {
+                $qb->andWhere("c.$field = :$field")
+                    ->setParameter($field, $filters[$field]);
+            }
+        }
+
+        if (!empty($filters['reference'])) {
+            $qb->andWhere('c.reference LIKE :reference')
+                ->setParameter('reference', $filters['reference'] . '%');
+        }
+
+        if (!empty($filters['expediteur'])) {
+            $qb->andWhere('c.expediteur LIKE :expediteur')
+                ->setParameter('expediteur', $filters['expediteur'] . '%');
+        }
+
+        $qb->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+
+        return new Paginator($qb->getQuery(), true);
+    }
+
 
     public function countAll(): int
     {

@@ -9,8 +9,6 @@ use App\Form\CourrierType;
 use App\Repository\CourrierRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -46,9 +44,19 @@ class CourrierController extends AbstractController
         $page = max(1, $request->query->getInt('page', 1));
         $limit = 50;
 
-        $pagination = $courrierRepository->findPaginated($page, $limit);
+        $filters = [
+            'destinataire' => $request->query->get('destinataire'),
+            'statut'       => $request->query->get('statut'),
+            'nature'       => $request->query->get('nature'),
+            'gestionnaire' => $request->query->get('gestionnaire'),
+            'responsable'  => $request->query->get('responsable'),
+            'reference'    => $request->query->get('reference'),
+            'expediteur'   => $request->query->get('expediteur'),
+        ];
 
-        $totalItems = count($pagination);
+        $pagination = $courrierRepository->findFilteredPaginated($filters, $page, $limit);
+
+        $totalItems = $pagination->count();
         $totalPages = ceil($totalItems / $limit);
 
         return $this->render('courrier/list.html.twig', [
@@ -57,6 +65,7 @@ class CourrierController extends AbstractController
             'totalPages'  => $totalPages,
             'totalItems'  => $totalItems,
             'limit'       => $limit,
+            'filters'    => $filters,
         ]);
     }
 
@@ -101,4 +110,32 @@ class CourrierController extends AbstractController
 
         return $this->redirectToRoute('app_courrier_list');
     }
+
+    #[Route('/courriers/autocomplete', name: 'app_courrier_autocomplete', methods: ['GET'])]
+    public function autocomplete(Request $request, CourrierRepository $repository): \Symfony\Component\HttpFoundation\JsonResponse
+    {
+        $term = $request->query->get('term', '');
+        $field = $request->query->get('field', '');
+
+        // On ne lance la requête que si >=3 caractères et champ autorisé
+        if (strlen($term) < 3 || !in_array($field, ['reference', 'expediteur'])) {
+            return $this->json([]);
+        }
+
+        $results = $repository->createQueryBuilder('c')
+            ->select("c.$field")
+            ->where("c.$field LIKE :term")
+            ->setParameter('term', $term . '%')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getScalarResult();
+
+        // Supprimer doublons et retourner uniquement les valeurs
+        $values = array_unique(array_map(fn($row) => $row[$field], $results));
+
+        return $this->json($values);
+    }
+
+
+
 }

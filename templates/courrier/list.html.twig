@@ -2,6 +2,17 @@
 
 {% block title %}Liste des courriers - GECAT{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {# Import des fichiers CSS séparés #}
+    <link rel="stylesheet" href="{{ asset('styles/page-layout.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/filters.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/autocomplete.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/table.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/buttons-badges.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/pagination.css') }}">
+{% endblock %}
+
 {% block body %}
     <!-- Breadcrumb -->
     <div class="breadcrumb-custom">
@@ -19,15 +30,27 @@
     <div class="main-content">
         <div class="container">
             {% for message in app.flashes('success') %}
-                <div class="alert alert-success mt-3">{{ message }}</div>
+                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             {% endfor %}
 
             {% for message in app.flashes('error') %}
-                <div class="alert alert-danger mt-3">{{ message }}</div>
+                <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             {% endfor %}
 
             {% for message in app.flashes('warning') %}
-                <div class="alert alert-warning mt-3">{{ message }}</div>
+                <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             {% endfor %}
 
             <!-- En-tête de page -->
@@ -38,6 +61,100 @@
                     Nouveau courrier
                 </a>
             </div>
+
+            <!-- FORMULAIRE DE FILTRES AMÉLIORÉ -->
+            <div class="filters-container">
+                <div class="filters-header">
+                    <h3 class="filters-title">
+                        <i class="bi bi-funnel-fill"></i>
+                        Filtres de recherche
+                    </h3>
+                    <a href="{{ path('app_courrier_list') }}" class="btn-reset-filters">
+                        <i class="bi bi-x-circle"></i>
+                        Réinitialiser
+                    </a>
+                </div>
+
+                <form method="get">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="filter-label">Numéro</label>
+                            <div class="autocomplete-wrapper position-relative">
+                                <input type="text" name="reference" value="{{ filters.reference ?? '' }}"
+                                       class="form-control" placeholder="Ex: 2024-012" id="referenceInput" autocomplete="off">
+                                <ul id="autocomplete-list-reference" class="autocomplete-list list-group position-absolute w-100" style="display:none;"></ul>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="filter-label">Émetteur</label>
+                            <div class="autocomplete-wrapper position-relative">
+                                <input type="text" name="expediteur" value="{{ filters.expediteur ?? '' }}"
+                                       class="form-control" placeholder="Ex: M. Mbombe" id="expediteurInput" autocomplete="off">
+                                <ul id="autocomplete-list-expediteur" class="autocomplete-list list-group position-absolute w-100" style="display:none;"></ul>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="filter-label">Destinataire</label>
+                            <select name="destinataire" class="form-select">
+                                <option value="">Tous</option>
+                                {% for dest in ['Direction Générale', 'Direction Financière', 'Direction RH', 'Direction Équipements'] %}
+                                    <option value="{{ dest }}" {{ filters.destinataire == dest ? 'selected' }}>{{ dest }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="filter-label">Type</label>
+                            <select name="statut" class="form-select">
+                                <option value="">Tous</option>
+                                {% for type in ['entrant','sortant','interne'] %}
+                                    <option value="{{ type }}" {{ filters.statut == type ? 'selected' }}>{{ type|capitalize }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="filter-label">Nature</label>
+                            <select name="nature" class="form-select">
+                                <option value="">Toutes</option>
+                                {% for n in ['demande','facture','bon-commande','note','invitation','rapport'] %}
+                                    <option value="{{ n }}" {{ filters.nature == n ? 'selected' }}>{{ n|capitalize }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="filter-label">Gestionnaire</label>
+                            <select name="gestionnaire" class="form-select">
+                                <option value="">Tous</option>
+                                {% for g in ['Aziza Moumbaga','Pierre Nziengui','Laure Mboumba','Serge Obiang'] %}
+                                    <option value="{{ g }}" {{ filters.gestionnaire == g ? 'selected' }}>{{ g }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="filter-label">Responsable</label>
+                            <select name="responsable" class="form-select">
+                                <option value="">Tous</option>
+                                {% for r in ['M. Pierre Nziengui – Directeur Général','Mme. Marie Obame – Directrice Financière','M. Jean Koumba – Directeur RH'] %}
+                                    <option value="{{ r }}" {{ filters.responsable == r ? 'selected' }}>{{ r }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn-filter w-100">
+                                <i class="bi bi-search"></i>
+                                Filtrer
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- FIN FORMULAIRE DE FILTRES -->
 
             <!-- Tableau des courriers -->
             <div class="table-container">
@@ -54,7 +171,10 @@
                     <tbody>
                     {% if courriers is empty %}
                         <tr>
-                            <td colspan="5" class="text-center p-4">Aucun courrier enregistré pour le moment.</td>
+                            <td colspan="5" class="text-center">
+                                <i class="bi bi-inbox"></i>
+                                <p>Aucun courrier trouvé.</p>
+                            </td>
                         </tr>
                     {% else %}
                         {% for courrier in courriers %}
@@ -64,13 +184,13 @@
                                 <td><span class="badge-{{ courrier.statut }}">{{ courrier.statut|replace({'_': ' '})|capitalize }}</span></td>
                                 <td>{{ courrier.destinataire }}</td>
                                 <td>
-                                    <a href="{{ path('app_courrier_show', {'id': courrier.id}) }}" class="btn btn-action btn-voir">
+                                    <a href="{{ path('app_courrier_show', {'id': courrier.id}) }}" class="btn-action btn-voir">
                                         <i class="bi bi-eye-fill"></i>
                                         Voir
                                     </a>
                                     <form method="post" action="{{ path('app_courrier_delete', {'id': courrier.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce courrier ?');" style="display:inline-block;">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ courrier.id) }}">
-                                        <button class="btn btn-action btn-supprimer">
+                                        <button class="btn-action btn-supprimer">
                                             <i class="bi bi-trash-fill"></i>
                                         </button>
                                     </form>
@@ -81,33 +201,13 @@
                     </tbody>
                 </table>
 
-                <!-- Pagination (à dynamiser plus tard) -->
-                {#
-                <nav>
-                    <ul class="pagination">
-                        {% for p in 1..totalPages %}
-                            <li class="page-item {{ p == page ? 'active' }}">
-                                <a class="page-link" href="{{ path('app_courrier_list', { page: p }) }}">
-                                    {{ p }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </nav>
-                <div class="pagination-container m-3">
-                    <div class="pagination-info">
-                        Affichage de 1 à {{ courriers|length }} sur {{ courriers|length }} courriers
-                    </div>
-                </div>
-                #}
-
                 {# Pagination #}
-                <nav class="d-flex justify-content-center">
+                <nav class="d-flex justify-content-center mt-3">
                     <ul class="pagination">
                         {# Bouton précédent #}
                         <li class="page-item {{ page == 1 ? 'disabled' }}">
                             <a class="page-link"
-                               href="{{ path('app_courrier_list', { page: page - 1 }) }}">
+                               href="{{ path('app_courrier_list', filters|merge({'page': page - 1})) }}">
                                 Précédent
                             </a>
                         </li>
@@ -115,7 +215,7 @@
                         {% for p in 1..totalPages %}
                             <li class="page-item {{ p == page ? 'active' }}">
                                 <a class="page-link"
-                                   href="{{ path('app_courrier_list', { page: p }) }}">
+                                   href="{{ path('app_courrier_list', filters|merge({'page': p})) }}">
                                     {{ p }}
                                 </a>
                             </li>
@@ -124,24 +224,82 @@
                         {# Bouton suivant #}
                         <li class="page-item {{ page == totalPages ? 'disabled' }}">
                             <a class="page-link"
-                               href="{{ path('app_courrier_list', { page: page + 1 }) }}">
+                               href="{{ path('app_courrier_list', filters|merge({'page': page + 1})) }}">
                                 Suivant
                             </a>
                         </li>
                     </ul>
                 </nav>
 
-                {# Texte d’information pagination #}
-                <div class="text-center text-muted mt-2">
+                {# Texte d'information pagination #}
+                <div class="pagination-info mb-3">
                     Affichage de
-                    {{ (page - 1) * limit + 1 }}
+                    <strong>{{ (page - 1) * limit + 1 }}</strong>
                     à
-                    {{ (page - 1) * limit + courriers|length }}
+                    <strong>{{ min(page * limit, totalItems) }}</strong>
                     sur
-                    {{ totalItems }}
+                    <strong>{{ totalItems }}</strong>
                     courriers
                 </div>
+
             </div>
         </div>
     </div>
+
+    {# CODE JAVASCRIPT POUR L'AUTOCOMPLETE #}
+    <script>
+        function setupAutocomplete(inputId, field) {
+            const input = document.getElementById(inputId);
+            const listContainer = document.getElementById('autocomplete-list-' + field);
+
+            input.addEventListener('input', async function () {
+                const term = this.value;
+                if (term.length < 3) {
+                    listContainer.style.display = 'none';
+                    listContainer.innerHTML = '';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/courriers/autocomplete?term=${encodeURIComponent(term)}&field=${field}`);
+                    const data = await response.json();
+
+                    listContainer.innerHTML = '';
+                    if (data.length === 0) {
+                        listContainer.style.display = 'none';
+                        return;
+                    }
+
+                    data.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item;
+                        li.classList.add('list-group-item', 'list-group-item-action', 'py-1');
+                        li.style.cursor = 'pointer';
+                        li.addEventListener('click', () => {
+                            input.value = item;
+                            listContainer.style.display = 'none';
+                        });
+                        listContainer.appendChild(li);
+                    });
+
+                    listContainer.style.display = 'block';
+
+                } catch (error) {
+                    console.error(error);
+                }
+            });
+
+            // Fermer la liste si clic en dehors
+            document.addEventListener('click', e => {
+                if (!input.contains(e.target) && !listContainer.contains(e.target)) {
+                    listContainer.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialisation
+        setupAutocomplete('referenceInput', 'reference');
+        setupAutocomplete('expediteurInput', 'expediteur');
+    </script>
+
 {% endblock %}

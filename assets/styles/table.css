@@ -1,0 +1,67 @@
+/* ========================================
+   TABLEAUX
+   ======================================== */
+
+.table-container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.custom-table {
+    width: 100%;
+    margin: 0;
+}
+
+.custom-table thead th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    padding: 18px 20px;
+    border-bottom: 2px solid #dee2e6;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+.custom-table tbody td {
+    padding: 18px 20px;
+    color: #495057;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+    font-size: 0.95rem;
+}
+
+.custom-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.custom-table tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s;
+}
+
+/* Référence en gras */
+.custom-table tbody td:first-child {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Message si tableau vide */
+.custom-table tbody td.text-center {
+    padding: 60px 20px;
+}
+
+.custom-table tbody td.text-center i {
+    font-size: 3rem;
+    color: #dee2e6;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.custom-table tbody td.text-center p {
+    color: #6c757d;
+    font-size: 1rem;
+    margin: 0;
+}
