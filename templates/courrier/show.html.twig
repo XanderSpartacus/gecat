@@ -1,61 +1,185 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Courrier {{ courrier.reference }} - GECAT{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/show.css') }}">
+{% endblock %}
+
 {% block body %}
-    {#
-    <pre>
-    {{ dump(courrier) }}
-    </pre>
-    -id: 3602398
-    -reference: "2026-1021-735"
-    -objet: "Bon de commande équipements informatiques"
-    -contenu: "Veuillez trouver ci-joint le document relatif à la demande."
-    -dateReception: DateTimeImmutable @1798070400 {#705 ▶}
-    -statut: "entrant"
-    -expediteur: "Trésor Public du Gabon"
-    -destinataire: "Direction Générale"
-    -nature: "Bon de commande"
-    -gestionnaire: "Aziza Moumbaga"
-    -responsable: "Mme Marie Obame – Directrice Financière"
-    #}
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-custom">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Tableau de bord</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_courrier_list') }}">Liste des courriers</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ courrier.reference }}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
 
-<div class="main-content">
-    <div class="container">
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success mt-3">{{ message }}</div>
-        {% endfor %}
+    <!-- Contenu principal -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Flash messages -->
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
 
-        {% for message in app.flashes('error') %}
-            <div class="alert alert-danger mt-3">{{ message }}</div>
-        {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
 
-        <h1>Détail du Courrier <small class="text-muted">#{{ courrier.id }}</small></h1>
-
-        <div class="card">
-            <div class="card-header">
-                Référence : <strong>{{ courrier.reference }}</strong>
+            <!-- En-tête de page -->
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title">Détail du courrier</h2>
+                    <p class="page-subtitle">Consultation des informations du courrier</p>
+                </div>
+                <div class="btn-group-actions">
+                    <a href="{{ path('app_courrier_list') }}" class="btn-action btn-retour">
+                        <i class="bi bi-arrow-left"></i>
+                        Retour
+                    </a>
+                    <a href="{{ path('app_courrier_edit', {'id': courrier.id}) }}" class="btn-action btn-modifier">
+                        <i class="bi bi-pencil-fill"></i>
+                        Modifier
+                    </a>
+                    <form method="post" action="{{ path('app_courrier_delete', {'id': courrier.id}) }}" style="display: inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ courrier.id) }}">
+                        <button type="submit" class="btn-action btn-supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce courrier ?')">
+                            <i class="bi bi-trash-fill"></i>
+                            Supprimer
+                        </button>
+                    </form>
+                </div>
             </div>
 
-            <div class="card-body">
-                <h5 class="card-title">{{ courrier.objet }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Statut : {{ courrier.statut }}</h6>
-                <p class="card-text">
-                    <strong>Expéditeur :</strong> {{ courrier.expediteur }} <br>
-                    <strong>Destinataire :</strong> {{ courrier.destinataire }} <br>
-                    <strong>Date de réception :</strong> {{ courrier.dateReception|date('d/m/Y H:i') }}
-                </p>
-                {% if courrier.contenu %}
-                    <p class="card-text border p-3 bg-light">{{ courrier.contenu|nl2br }}</p>
-                {% else %}
-                    <p class="card-text text-muted">Aucun contenu détaillé pour ce courrier.</p>
-                {% endif %}
-                <a href="{{ path('app_courrier_list') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
-                <a href="{{ path('app_courrier_edit', {'id': courrier.id}) }}" class="btn btn-warning mt-3">Modifier</a>
-                <form method="post" action="{{ path('app_courrier_delete', {'id': courrier.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce courrier ?');" style="display:inline-block;">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ courrier.id) }}">
-                    <button class="btn btn-danger mt-3">Supprimer</button>
-                </form>
+            <!-- Contenu du courrier -->
+            <div class="courrier-container">
+                <!-- En-tête du courrier -->
+                <div class="courrier-header">
+                    <div class="courrier-reference">
+                        <i class="bi bi-hash"></i>
+                        Référence : <span class="courrier-reference-number">{{ courrier.reference }}</span>
+                    </div>
+                    <h1 class="courrier-objet">{{ courrier.objet }}</h1>
+
+                    <!-- Badge de statut -->
+                    {% if courrier.statut == 'entrant' %}
+                        <span class="status-badge status-entrant">
+                            <i class="bi bi-arrow-down-circle-fill"></i>
+                            Courrier entrant
+                        </span>
+                    {% elseif courrier.statut == 'sortant' %}
+                        <span class="status-badge status-sortant">
+                            <i class="bi bi-arrow-up-circle-fill"></i>
+                            Courrier sortant
+                        </span>
+                    {% else %}
+                        <span class="status-badge status-interne">
+                            <i class="bi bi-arrow-left-right"></i>
+                            Courrier interne
+                        </span>
+                    {% endif %}
+                </div>
+
+                <!-- Grille de détails -->
+                <div class="details-grid">
+                    <!-- Expéditeur -->
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="bi bi-person-fill"></i>
+                            Expéditeur
+                        </div>
+                        <div class="detail-value">
+                            {{ courrier.expediteur ?: '—' }}
+                        </div>
+                    </div>
+
+                    <!-- Destinataire -->
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="bi bi-building"></i>
+                            Destinataire
+                        </div>
+                        <div class="detail-value">
+                            {{ courrier.destinataire ?: '—' }}
+                        </div>
+                    </div>
+
+                    <!-- Date de réception -->
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="bi bi-calendar-check"></i>
+                            Date de réception
+                        </div>
+                        <div class="detail-value">
+                            {{ courrier.dateReception|date('d/m/Y à H:i') }}
+                        </div>
+                    </div>
+
+                    <!-- Nature -->
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="bi bi-tag-fill"></i>
+                            Nature
+                        </div>
+                        <div class="detail-value">
+                            {{ courrier.nature ? courrier.nature|replace({'-': ' '})|capitalize : '—' }}
+                        </div>
+                    </div>
+
+                    <!-- Gestionnaire -->
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="bi bi-person-badge"></i>
+                            Gestionnaire
+                        </div>
+                        <div class="detail-value">
+                            {{ courrier.gestionnaire ?: '—' }}
+                        </div>
+                    </div>
+
+                    <!-- Responsable administratif -->
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="bi bi-person-check-fill"></i>
+                            Responsable administratif
+                        </div>
+                        <div class="detail-value">
+                            {{ courrier.responsable ?: '—' }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section contenu -->
+                <div class="content-section">
+                    <div class="content-label">
+                        <i class="bi bi-file-text-fill"></i>
+                        Contenu du courrier
+                    </div>
+                    {% if courrier.contenu %}
+                        <div class="content-text">{{ courrier.contenu|nl2br }}</div>
+                    {% else %}
+                        <div class="content-empty">
+                            <i class="bi bi-file-earmark-x"></i>
+                            Aucun contenu détaillé pour ce courrier.
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
 {% endblock %}
-
