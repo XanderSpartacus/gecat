@@ -4,11 +4,16 @@ namespace App\DataFixtures;
 
 use App\Entity\Courrier;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Random\RandomException;
 
-class CourrierFixtures extends Fixture
+class CourrierFixtures extends Fixture implements FixtureGroupInterface
 {
+    public static function getGroups(): array
+    {
+        return ['CourrierFixtures']; // Le nom du groupe
+    }
     /**
      * @throws RandomException
      */
@@ -62,7 +67,7 @@ class CourrierFixtures extends Fixture
             'M. Jean Koumba – Directeur des Ressources Humaines',
         ];
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $reference = sprintf(
                 '2026-%04d-%03d',
                 1000 + $i,
