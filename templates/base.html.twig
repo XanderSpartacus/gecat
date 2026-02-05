@@ -14,6 +14,28 @@
     {% endblock %}
 </head>
 <body>
+
+{# Affiche les messages flash uniquement si on se trouve sur la page login #}
+{% if app.request.attributes.get('_route') == 'app_login' %}
+    {% set success = app.flashes('success') %}
+    {% set error = app.flashes('error') %}
+    {% set warning = app.flashes('warning') %}
+
+    {% if success or error or warning %}
+        <div class="container mt-3">
+            {% for message in success %}
+                <div class="alert alert-success" role="alert">{{ message }}</div>
+            {% endfor %}
+            {% for message in error %}
+                <div class="alert alert-danger" role="alert">{{ message }}</div>
+            {% endfor %}
+            {% for message in warning %}
+                <div class="alert alert-warning" role="alert">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endif %}
+
 {% if app.user %}
     <!-- Header -->
     <div class="header">
