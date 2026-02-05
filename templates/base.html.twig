@@ -27,44 +27,7 @@
             </div>
         </div>
     </div>
-
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav w-100">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_dashboard') }}">
-                            <i class="bi bi-grid-fill"></i>
-                            Tableau de bord
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_courrier_list') }}">
-                            <i class="bi bi-arrow-repeat"></i>
-                            Courriers
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_courrier_new') }}">
-                            <i class="bi bi-envelope-fill"></i>
-                            Nouveau courrier
-                        </a>
-                    </li>
-                    <li class="nav-item ms-auto">
-                        <a class="nav-link" href="{{ path('app_logout') }}">
-                            <i class="bi bi-power"></i>
-                            Déconnexion
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% include '_partials/_navbar.html.twig' %}
 {% endif %}
 {% block body %}{% endblock %}
 </body>
