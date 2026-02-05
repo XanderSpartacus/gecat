@@ -24,16 +24,12 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class RegistrationController extends AbstractController
 {
-    private $params;
-
     public function __construct(
         private EmailVerifier $emailVerifier,
         private VerifyEmailHelperInterface $verifyEmailHelper,
         private MailerInterface $mailer,
-        ParameterBagInterface $params)
-    {
-        $this->params = $params;
-    }
+        private ParameterBagInterface $params)
+    {}
 
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
