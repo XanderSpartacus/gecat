@@ -43,15 +43,15 @@ class CourrierFixtures extends Fixture implements FixtureGroupInterface
             'Direction des Équipements et du Patrimoine',
         ];
 
-        $statuts = ['entrant', 'sortant', 'interne'];
+        $types = ['entrant', 'sortant', 'interne'];
 
         $natures = [
-            'Demande',
-            'Facture',
-            'Bon de commande',
-            'Note de service',
-            'Invitation',
-            'Rapport',
+            'demande',
+            'facture',
+            'bon-commande',
+            'note',
+            'invitation',
+            'rapport',
         ];
 
         $gestionnaires = [
@@ -80,7 +80,8 @@ class CourrierFixtures extends Fixture implements FixtureGroupInterface
             $courrier->setContenu($contenus[array_rand($contenus)]);
             $courrier->setExpediteur('Trésor Public du Gabon');
             $courrier->setDestinataire($destinataires[array_rand($destinataires)]);
-            $courrier->setStatut($statuts[array_rand($statuts)]);
+            $courrier->setType($types[array_rand($types)]);
+            $courrier->setStatut('recu');
             $courrier->setNature($natures[array_rand($natures)]);
             $courrier->setGestionnaire($gestionnaires[array_rand($gestionnaires)]);
             $courrier->setResponsable($responsables[array_rand($responsables)]);

@@ -35,7 +35,7 @@ class CourrierRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c')
             ->orderBy('c.dateReception', 'DESC');
 
-        foreach (['destinataire', 'statut', 'nature', 'gestionnaire', 'responsable'] as $field) {
+        foreach (['destinataire', 'type', 'nature', 'gestionnaire', 'responsable'] as $field) {
             if (!empty($filters[$field])) {
                 $qb->andWhere("c.$field = :$field")
                     ->setParameter($field, $filters[$field]);
@@ -67,12 +67,12 @@ class CourrierRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function countByStatut(string $statut): int
+    public function countByType(string $type): int
     {
         return (int) $this->createQueryBuilder('c')
             ->select('COUNT(c.id)')
-            ->andWhere('c.statut = :statut')
-            ->setParameter('statut', $statut)
+            ->andWhere('c.type = :statut')
+            ->setParameter('statut', $type)
             ->getQuery()
             ->getSingleScalarResult();
     }

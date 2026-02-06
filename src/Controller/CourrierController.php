@@ -54,7 +54,7 @@ class CourrierController extends AbstractController
 
         $filters = [
             'destinataire' => $request->query->get('destinataire'),
-            'statut'       => $request->query->get('statut'),
+            'type'       => $request->query->get('type'),
             'nature'       => $request->query->get('nature'),
             'gestionnaire' => $request->query->get('gestionnaire'),
             'responsable'  => $request->query->get('responsable'),

@@ -107,10 +107,10 @@
 
                         <div class="col-md-3">
                             <label class="filter-label">Type</label>
-                            <select name="statut" class="form-select">
+                            <select name="type" class="form-select">
                                 <option value="">Tous</option>
                                 {% for type in ['entrant','sortant','interne'] %}
-                                    <option value="{{ type }}" {{ filters.statut == type ? 'selected' }}>{{ type|capitalize }}</option>
+                                    <option value="{{ type }}" {{ filters.type == type ? 'selected' }}>{{ type|capitalize }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -163,7 +163,7 @@
                     <tr>
                         <th>Référence</th>
                         <th>Objet</th>
-                        <th>Statut</th>
+                        <th>type</th>
                         <th>Destinataire</th>
                         <th>Actions</th>
                     </tr>
@@ -181,7 +181,7 @@
                             <tr>
                                 <td>{{ courrier.reference }}</td>
                                 <td>{{ courrier.objet }}</td>
-                                <td><span class="badge-{{ courrier.statut }}">{{ courrier.statut|replace({'_': ' '})|capitalize }}</span></td>
+                                <td><span class="badge-{{ courrier.type }}">{{ courrier.type|replace({'_': ' '})|capitalize }}</span></td>
                                 <td>{{ courrier.destinataire }}</td>
                                 <td>
                                     <a href="{{ path('app_courrier_show', {'id': courrier.id}) }}" class="btn-action btn-voir">

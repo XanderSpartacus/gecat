@@ -15,8 +15,8 @@ class DashboardController extends AbstractController
     public function index(CourrierRepository $courrierRepository): Response // Notre action, le point de départ du chef d'orchestre
     {
         $totalCourriers = $courrierRepository->countAll();
-        $courriersEntrants = $courrierRepository->countByStatut('entrant');
-        $courriersSortants = $courrierRepository->countByStatut('sortant');
+        $courriersEntrants = $courrierRepository->countByType('entrant');
+        $courriersSortants = $courrierRepository->countByType('sortant');
 
         // Le contrôleur délègue la présentation de Twig via la méthode render()
         return $this->render('dashboard/index.html.twig', [

@@ -55,7 +55,7 @@ class CourrierType extends AbstractType
                 'placeholder' => 'Sélectionnez...',
                 'attr' => ['class' => 'form-select'], // Ajout de la classe Bootstrap
             ])
-            ->add('statut', ChoiceType::class, [ // "Type" in the mockup
+            ->add('type', ChoiceType::class, [ // "Type" in the mockup
                 'label' => 'Type',
                 'required' => false,
                 'choices' => [

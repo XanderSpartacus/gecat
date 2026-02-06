@@ -80,13 +80,13 @@
                     </div>
                     <h1 class="courrier-objet">{{ courrier.objet }}</h1>
 
-                    <!-- Badge de statut -->
-                    {% if courrier.statut == 'entrant' %}
+                    <!-- Badge de type -->
+                    {% if courrier.type == 'entrant' %}
                         <span class="status-badge status-entrant">
                             <i class="bi bi-arrow-down-circle-fill"></i>
                             Courrier entrant
                         </span>
-                    {% elseif courrier.statut == 'sortant' %}
+                    {% elseif courrier.type == 'sortant' %}
                         <span class="status-badge status-sortant">
                             <i class="bi bi-arrow-up-circle-fill"></i>
                             Courrier sortant

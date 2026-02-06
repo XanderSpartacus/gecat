@@ -29,7 +29,10 @@ class Courrier
     private ?\DateTimeImmutable $dateReception = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $statut = null;
+    private ?string $type = null; // Ancien 'statut' (entrant/sortant)
+
+    #[ORM\Column(length: 255)]
+    private ?string $statut = 'recu'; // Noyveau statut métier (recu, en_cours, traite, archive)
 
     #[ORM\Column(length: 255)]
     private ?string $expediteur = null;
@@ -106,6 +109,18 @@ class Courrier
     public function setDateReception(\DateTimeImmutable $dateReception): static
     {
         $this->dateReception = $dateReception;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }
