@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Courrier;
+use App\Enum\CourrierStatut;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -38,9 +39,9 @@ class CourrierFixtures extends Fixture implements FixtureGroupInterface
 
         $destinataires = [
             'Direction Générale',
-            'Direction des Finances Publiques',
-            'Direction des Ressources Humaines',
-            'Direction des Équipements et du Patrimoine',
+            'Direction Financière',
+            'Direction RH',
+            'Direction Équipements',
         ];
 
         $types = ['entrant', 'sortant', 'interne'];
@@ -55,16 +56,14 @@ class CourrierFixtures extends Fixture implements FixtureGroupInterface
         ];
 
         $gestionnaires = [
-            'Aziza Moumbaga',
-            'Pierre Nziengui',
-            'Laure Mboumba',
-            'Serge Obiang',
+            'admin@gecat.ga',
+            'gestionnaire@gecat.ga',
         ];
 
         $responsables = [
             'M. Pierre Nziengui – Directeur Général',
-            'Mme Marie Obame – Directrice Financière',
-            'M. Jean Koumba – Directeur des Ressources Humaines',
+            'Mme. Marie Obame – Directrice Financière',
+            'M. Jean Koumba – Directeur RH',
         ];
 
         for ($i = 0; $i < 100; $i++) {
@@ -81,7 +80,7 @@ class CourrierFixtures extends Fixture implements FixtureGroupInterface
             $courrier->setExpediteur('Trésor Public du Gabon');
             $courrier->setDestinataire($destinataires[array_rand($destinataires)]);
             $courrier->setType($types[array_rand($types)]);
-            $courrier->setStatut('recu');
+            $courrier->setStatut(CourrierStatut::RECU);
             $courrier->setNature($natures[array_rand($natures)]);
             $courrier->setGestionnaire($gestionnaires[array_rand($gestionnaires)]);
             $courrier->setResponsable($responsables[array_rand($responsables)]);

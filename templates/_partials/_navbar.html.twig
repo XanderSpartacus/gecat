@@ -25,7 +25,20 @@
                         Nouveau courrier
                     </a>
                 </li>
-                <li class="nav-item ms-auto">
+                <li class="nav-item ms-auto d-flex align-items-center">
+                    <span class="navbar-text me-3 text-white-50">
+                        <i class="bi bi-person-circle text-white me-1"></i>
+                        {{ app.user.userIdentifier }}
+                        <span class="badge bg-light text-dark ms-1" style="font-size: 0.7rem;">
+                            {% if is_granted('ROLE_ADMIN') %}
+                                ADMIN
+                            {% elseif is_granted('ROLE_GESTIONNAIRE') %}
+                                GESTIONNAIRE
+                            {% else %}
+                                UTILISATEUR
+                            {% endif %}
+                        </span>
+                    </span>
                     <a class="nav-link" href="{{ path('app_logout') }}">
                         <i class="bi bi-power"></i>
                         Déconnexion

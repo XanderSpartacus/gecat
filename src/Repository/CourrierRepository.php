@@ -35,7 +35,7 @@ class CourrierRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c')
             ->orderBy('c.dateReception', 'DESC');
 
-        foreach (['destinataire', 'type', 'nature', 'gestionnaire', 'responsable'] as $field) {
+        foreach (['destinataire', 'type', 'statut', 'nature', 'gestionnaire', 'responsable'] as $field) {
             if (!empty($filters[$field])) {
                 $qb->andWhere("c.$field = :$field")
                     ->setParameter($field, $filters[$field]);

@@ -31,8 +31,8 @@ class Courrier
     #[ORM\Column(length: 255)]
     private ?string $type = null; // Ancien 'statut' (entrant/sortant)
 
-    #[ORM\Column(length: 255)]
-    private ?string $statut = 'recu'; // Noyveau statut métier (recu, en_cours, traite, archive)
+    #[ORM\Column(length: 255, enumType: \App\Enum\CourrierStatut::class)]
+    private ?\App\Enum\CourrierStatut $statut = \App\Enum\CourrierStatut::RECU; // Noyveau statut métier (recu, en_cours, traite, archive)
 
     #[ORM\Column(length: 255)]
     private ?string $expediteur = null;
@@ -125,12 +125,12 @@ class Courrier
         return $this;
     }
 
-    public function getStatut(): ?string
+    public function getStatut(): ?\App\Enum\CourrierStatut
     {
         return $this->statut;
     }
 
-    public function setStatut(string $statut): static
+    public function setStatut(\App\Enum\CourrierStatut $statut): static
     {
         $this->statut = $statut;
 

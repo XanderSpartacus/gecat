@@ -3,61 +3,75 @@
 namespace App\Form;
 
 use App\Entity\Courrier;
+use App\Enum\CourrierStatut;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CourrierType extends AbstractType
 {
+    public function __construct(
+        private Security $security
+    ) {}
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var Courrier $courrier */
+        $courrier = $options['data'] ?? null;
+        $user = $this->security->getUser();
+
+        // Droits d'édition complets : Admin ou Propriétaire du courrier
+        $canEditAll = $this->security->isGranted('ROLE_ADMIN') ||
+            ($courrier && $courrier->getGestionnaire() === $user?->getUserIdentifier());
+
         $builder
             ->add('reference', TextType::class, [
                 'label' => 'Numéro',
                 'required' => false,
-                'attr' => ['class' => 'form-control'], // Ajout de la classe Bootstrap
+                'disabled' => !$canEditAll,
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('objet', TextType::class, [
                 'label' => 'Objet',
                 'required' => false,
-                /*'constraints' => [
-                    new NotBlank([
-                        'message' => 'L’objet du courrier est obligatoire.',
-                    ]),
-                ],*/
+                'disabled' => !$canEditAll,
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('contenu', TextareaType::class, [
                 'label' => 'Contenu du courrier',
                 'required' => false,
-                'attr' => ['class' => 'form-control', 'rows' => 5, 'placeholder' => 'Saisissez le contenu du courrier...'],
+                'disabled' => !$canEditAll,
+                'attr' => ['class' => 'form-control', 'rows' => 5],
             ])
             ->add('expediteur', TextType::class, [
                 'label' => 'Émetteur',
                 'required' => false,
+                'disabled' => !$canEditAll,
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('destinataire', ChoiceType::class, [
                 'label' => 'Destinataire',
                 'required' => false,
+                'disabled' => !$canEditAll,
                 'choices' => [
                     'Direction Générale' => 'Direction Générale',
                     'Direction Financière' => 'Direction Financière',
                     'Direction RH' => 'Direction RH',
                     'Direction Équipements' => 'Direction Équipements',
                 ],
-                'placeholder' => 'Sélectionnez...',
-                'attr' => ['class' => 'form-select'], // Ajout de la classe Bootstrap
+                'attr' => ['class' => 'form-select'],
             ])
-            ->add('type', ChoiceType::class, [ // "Type" in the mockup
+            ->add('type', ChoiceType::class, [
                 'label' => 'Type',
                 'required' => false,
+                'disabled' => !$canEditAll,
                 'choices' => [
                     'Entrant' => 'entrant',
                     'Sortant' => 'sortant',
@@ -65,15 +79,22 @@ class CourrierType extends AbstractType
                 ],
                 'attr' => ['class' => 'form-select'],
             ])
+            ->add('statut', EnumType::class, [
+                'class' => CourrierStatut::class,
+                'label' => 'Statut du traitement',
+                'choice_label' => fn (CourrierStatut $choice) => $choice->getLabel(),
+                'attr' => ['class' => 'form-select'],
+            ])
             ->add('dateReception', DateTimeType::class, [
                 'label' => 'Date de signature',
                 'widget' => 'single_text',
-                'input'  => 'datetime_immutable',
+                'disabled' => !$canEditAll,
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('nature', ChoiceType::class, [
                 'label' => 'Nature',
                 'required' => false,
+                'disabled' => !$canEditAll,
                 'choices'  => [
                     'Demande' => 'demande',
                     'Facture' => 'facture',
@@ -82,30 +103,27 @@ class CourrierType extends AbstractType
                     'Invitation' => 'invitation',
                     'Rapport' => 'rapport',
                 ],
-                'placeholder' => 'Sélectionnez...',
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('gestionnaire', ChoiceType::class, [
                 'label' => 'Gestionnaire',
                 'required' => false,
+                'disabled' => !$this->security->isGranted('ROLE_ADMIN'),
                 'choices' => [
-                    'Aziza Moumbaga' => 'Aziza Moumbaga',
-                    'Pierre Nziengui' => 'Pierre Nziengui',
-                    'Laure Mboumba' => 'Laure Mboumba',
-                    'Serge Obiang' => 'Serge Obiang',
+                    'Admin' => 'admin@gecat.ga',
+                    'Gestionnaire' => 'gestionnaire@gecat.ga',
                 ],
-                'placeholder' => 'Sélectionnez...',
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('responsable', ChoiceType::class, [
                 'label' => 'Responsable administratif',
                 'required' => false,
+                'disabled' => !$canEditAll,
                 'choices' => [
                     'M. Pierre Nziengui – Directeur Général' => 'M. Pierre Nziengui – Directeur Général',
                     'Mme. Marie Obame – Directrice Financière' => 'Mme. Marie Obame – Directrice Financière',
                     'M. Jean Koumba – Directeur RH' => 'M. Jean Koumba – Directeur RH',
                 ],
-                'placeholder' => 'Sélectionnez...',
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('pieceJointes', CollectionType::class, [

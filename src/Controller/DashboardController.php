@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[isGranted('ROLE_ADMIN')]
+#[isGranted('ROLE_USER')]
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard', name: 'app_dashboard')] // Notre route, le GPS de l'application

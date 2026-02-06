@@ -116,6 +116,17 @@
                         </div>
 
                         <div class="col-md-3">
+                            <label class="filter-label">Statut</label>
+                            <select name="statut" class="form-select">
+                                <option value="">Tous</option>
+                                <option value="recu" {{ filters.statut == 'recu' ? 'selected' }}>Reçu</option>
+                                <option value="en_cours" {{ filters.statut == 'en_cours' ? 'selected' }}>En cours</option>
+                                <option value="traite" {{ filters.statut == 'traite' ? 'selected' }}>Traité</option>
+                                <option value="archive" {{ filters.statut == 'archive' ? 'selected' }}>Archivé</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
                             <label class="filter-label">Nature</label>
                             <select name="nature" class="form-select">
                                 <option value="">Toutes</option>
@@ -129,7 +140,7 @@
                             <label class="filter-label">Gestionnaire</label>
                             <select name="gestionnaire" class="form-select">
                                 <option value="">Tous</option>
-                                {% for g in ['Aziza Moumbaga','Pierre Nziengui','Laure Mboumba','Serge Obiang'] %}
+                                {% for g in ['admin@gecat.ga','gestionnaire@gecat.ga'] %}
                                     <option value="{{ g }}" {{ filters.gestionnaire == g ? 'selected' }}>{{ g }}</option>
                                 {% endfor %}
                             </select>
@@ -163,7 +174,8 @@
                     <tr>
                         <th>Référence</th>
                         <th>Objet</th>
-                        <th>type</th>
+                        <th>Type</th>
+                        <th>Statut</th>
                         <th>Destinataire</th>
                         <th>Actions</th>
                     </tr>
@@ -171,7 +183,7 @@
                     <tbody>
                     {% if courriers is empty %}
                         <tr>
-                            <td colspan="5" class="text-center">
+                            <td colspan="6" class="text-center">
                                 <i class="bi bi-inbox"></i>
                                 <p>Aucun courrier trouvé.</p>
                             </td>
@@ -182,18 +194,25 @@
                                 <td>{{ courrier.reference }}</td>
                                 <td>{{ courrier.objet }}</td>
                                 <td><span class="badge-{{ courrier.type }}">{{ courrier.type|replace({'_': ' '})|capitalize }}</span></td>
+                                <td>
+                                    <span class="badge bg-{{ courrier.statut.getColor() }}">
+                                        {{ courrier.statut.getLabel() }}
+                                    </span>
+                                </td>
                                 <td>{{ courrier.destinataire }}</td>
                                 <td>
                                     <a href="{{ path('app_courrier_show', {'id': courrier.id}) }}" class="btn-action btn-voir">
                                         <i class="bi bi-eye-fill"></i>
                                         Voir
                                     </a>
-                                    <form method="post" action="{{ path('app_courrier_delete', {'id': courrier.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce courrier ?');" style="display:inline-block;">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ courrier.id) }}">
-                                        <button class="btn-action btn-supprimer">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
-                                    </form>
+                                    {% if is_granted('COURRIER_DELETE', courrier) %}
+                                        <form method="post" action="{{ path('app_courrier_delete', {'id': courrier.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce courrier ?');" style="display:inline-block;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ courrier.id) }}">
+                                            <button class="btn-action btn-supprimer">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

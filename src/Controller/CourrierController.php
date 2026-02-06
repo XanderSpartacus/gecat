@@ -8,6 +8,7 @@ use App\Entity\Courrier;
 use App\Entity\PieceJointe;
 use App\Form\CourrierType;
 use App\Repository\CourrierRepository;
+use App\Security\Voter\CourrierVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Dompdf\Dompdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,13 +19,16 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-#[isGranted('ROLE_ADMIN')]
+#[isGranted('ROLE_USER')]
 class CourrierController extends AbstractController
 {
     #[Route('/courrier/new', name: 'app_courrier_new')]
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $courrier = new Courrier();
+        // Optionnel : par défaut on peut assigner l'utilisateur connecté comme gestionnaire
+        $courrier->setGestionnaire($this->getUser()->getUserIdentifier());
+
         $form = $this->createForm(CourrierType::class, $courrier);
         $form->handleRequest($request);
 
@@ -55,6 +59,7 @@ class CourrierController extends AbstractController
         $filters = [
             'destinataire' => $request->query->get('destinataire'),
             'type'       => $request->query->get('type'),
+            'statut'       => $request->query->get('statut'),
             'nature'       => $request->query->get('nature'),
             'gestionnaire' => $request->query->get('gestionnaire'),
             'responsable'  => $request->query->get('responsable'),
@@ -78,6 +83,7 @@ class CourrierController extends AbstractController
     }
 
     #[Route('/courrier/{id}', name: 'app_courrier_show', methods: ['GET'])]
+    #[IsGranted(CourrierVoter::VIEW, subject: 'courrier')]
     public function show(Courrier $courrier): Response
     {
         return $this->render('courrier/show.html.twig', [
@@ -86,6 +92,7 @@ class CourrierController extends AbstractController
     }
 
     #[Route('/courrier/{id}/pdf', name: 'app_courrier_pdf', methods: ['GET'])]
+    #[IsGranted(CourrierVoter::VIEW, subject: 'courrier')]
     public function pdf(Courrier $courrier): Response
     {
         $logoPath = $this->getParameter('kernel.project_dir') . '/assets/images/logo-officiel.jpg';
@@ -117,6 +124,7 @@ class CourrierController extends AbstractController
     }
 
     #[Route('/courrier/{id}/edit', name: 'app_courrier_edit', methods: ['GET', 'POST'])]
+    #[IsGranted(CourrierVoter::EDIT, subject: 'courrier')]
     public function edit(
         Request $request,
         Courrier $courrier,
@@ -143,6 +151,7 @@ class CourrierController extends AbstractController
     }
 
     #[Route('/courrier/{id}', name: 'app_courrier_delete', methods: ['POST'])]
+    #[IsGranted(CourrierVoter::DELETE, subject: 'courrier')]
     public function delete(Request $request, Courrier $courrier, EntityManagerInterface $entityManager): Response
     {
         // dd($courrier);
