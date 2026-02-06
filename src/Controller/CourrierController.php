@@ -8,6 +8,7 @@ use App\Entity\Courrier;
 use App\Form\CourrierType;
 use App\Repository\CourrierRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Dompdf\Dompdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,6 +77,37 @@ class CourrierController extends AbstractController
     {
         return $this->render('courrier/show.html.twig', [
             'courrier' => $courrier,
+        ]);
+    }
+
+    #[Route('/courrier/{id}/pdf', name: 'app_courrier_pdf', methods: ['GET'])]
+    public function pdf(Courrier $courrier): Response
+    {
+        $logoPath = $this->getParameter('kernel.project_dir') . '/assets/images/logo-officiel.jpg';
+
+        $logoData = '';
+        if (file_exists($logoPath)) {
+            $logoData = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($logoPath));
+        }
+
+        $html = $this->renderView('courrier/pdf.html.twig', [
+            'courrier' => $courrier,
+            'logo' => $logoData
+        ]);
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        $filename = sprintf('courrier_%s.pdf', $courrier->getReference());
+
+        return new Response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            // Pour afficher le PDF dans le navigateur
+            //'Content-Disposition' => sprintf('inline; filename="%s"', $filename),
+            // Pour forcer le téléchargement
+            'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
         ]);
     }
 

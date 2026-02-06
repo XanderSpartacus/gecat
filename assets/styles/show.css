@@ -71,6 +71,17 @@ body {
     transform: translateY(-1px);
 }
 
+.btn-pdf {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-pdf:hover {
+    background-color: #c0392b;
+    color: white;
+    transform: translateY(-1px);
+}
+
 .btn-supprimer {
     background-color: #dc3545;
     color: white;

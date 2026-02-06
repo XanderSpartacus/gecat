@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Courrier {{ courrier.reference }}</title>
+    <style>
+        @page {
+            margin: 1cm 2cm 2cm 2cm;
+        }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 11px;
+            color: #1a1a1a;
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+        }
+        .header-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            width: 150px;
+            margin-bottom: 10px;
+        }
+        .republique {
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+        .ministere {
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        .tresor {
+            font-weight: bold;
+            font-size: 16px;
+            color: #0056b3;
+            text-transform: uppercase;
+        }
+        .devise {
+            font-style: italic;
+            font-size: 11px;
+            margin-top: 6px;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            display: inline-block;
+            padding: 3px 25px;
+        }
+
+        .meta-container {
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .meta-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .meta-table td {
+            vertical-align: top;
+        }
+        .meta-left {
+            width: 45%;
+            padding-right: 15px;
+        }
+        .meta-right {
+            width: 55%;
+            padding-left: 15px;
+        }
+
+        .info-row {
+            margin-bottom: 8px;
+        }
+        .label {
+            font-weight: bold;
+            display: inline-block;
+            width: 100px;
+        }
+        .value {
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .date-lieu {
+            text-align: right;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .objet-section {
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .objet-title {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-right: 10px;
+            font-size: 12px;
+        }
+        .objet-text {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .contenu-section {
+            margin-top: 20px;
+            text-align: justify;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: -1cm;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 9px;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="header-container">
+    {% if logo %}
+        <img src="{{ logo }}" class="logo" alt="Logo">
+    {% endif %}
+    <div class="republique">République Gabonaise</div>
+    <div class="devise">Union - Travail - Justice</div>
+    <div class="ministere">Ministère de l'Économie et des Participations</div>
+    <div class="tresor">Direction Générale du Trésor et de la Comptabilité Publique</div>
+</div>
+
+<div class="date-lieu">
+    Libreville, le {{ courrier.dateReception|date('d/m/Y') }}
+</div>
+
+<div class="meta-container">
+    <table class="meta-table">
+        <tr>
+            <td class="meta-left">
+                <div class="info-row"><span class="label">RÉFÉRENCE :</span><span class="value">{{ courrier.reference }}</span></div>
+                <div class="info-row"><span class="label">EXPÉDITEUR :</span><span class="value">{{ courrier.expediteur ?: '—' }}</span></div>
+                <div class="info-row"><span class="label">NATURE :</span><span class="value">{{ courrier.nature ? courrier.nature|replace({'-': ' '})|capitalize : '—' }}</span></div>
+            </td>
+            <td class="meta-right">
+                <div class="info-row"><span class="label">DESTINATAIRE :</span><span class="value">{{ courrier.destinataire ?: '—' }}</span></div>
+                <div class="info-row"><span class="label">GESTIONNAIRE :</span><span class="value">{{ courrier.gestionnaire ?: '—' }}</span></div>
+                <div class="info-row"><span class="label">RESPONSABLE :</span><span class="value">{{ courrier.responsable ?: '—' }}</span></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="objet-section">
+    <span class="objet-title">OBJET :</span><span class="objet-text">{{ courrier.objet }}</span>
+</div>
+
+<div class="contenu-section">{{ courrier.contenu|nl2br }}</div>
+
+<div class="footer">
+    Direction Générale du Trésor et de la Comptabilité Publique - B.P. 165 Libreville - Gabon<br>
+    Tél: (+241) 01 79 50 00 | Site: www.tresorpublic.ga | GECAT - {{ "now"|date("d/m/Y H:i") }}
+</div>
+</body>
+</html>
