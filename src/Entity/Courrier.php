@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CourrierRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -43,6 +45,17 @@ class Courrier
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $responsable = null;
+
+    /**
+     * @var Collection<int, PieceJointe>
+     */
+    #[ORM\OneToMany(targetEntity: PieceJointe::class, mappedBy: 'Courrier', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $pieceJointes;
+
+    public function __construct()
+    {
+        $this->pieceJointes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -165,6 +178,36 @@ class Courrier
     public function setResponsable(?string $responsable): static
     {
         $this->responsable = $responsable;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PieceJointe>
+     */
+    public function getPieceJointes(): Collection
+    {
+        return $this->pieceJointes;
+    }
+
+    public function addPieceJointe(PieceJointe $pieceJointe): static
+    {
+        if (!$this->pieceJointes->contains($pieceJointe)) {
+            $this->pieceJointes->add($pieceJointe);
+            $pieceJointe->setCourrier($this);
+        }
+
+        return $this;
+    }
+
+    public function removePieceJointe(PieceJointe $pieceJointe): static
+    {
+        if ($this->pieceJointes->removeElement($pieceJointe)) {
+            // set the owning side to null (unless already changed)
+            if ($pieceJointe->getCourrier() === $this) {
+                $pieceJointe->setCourrier(null);
+            }
+        }
 
         return $this;
     }

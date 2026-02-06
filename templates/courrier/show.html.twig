@@ -183,6 +183,36 @@
                         </div>
                     {% endif %}
                 </div>
+
+                <!-- Section pièces jointes -->
+                {% if courrier.pieceJointes|length > 0 %}
+                    <div class="attachments-section mt-4">
+                        <div class="content-label">
+                            <i class="bi bi-paperclip"></i>
+                            Pièces jointes ({{ courrier.pieceJointes|length }})
+                        </div>
+                        <div class="attachments-grid mt-3">
+                            <div class="list-group">
+                                {% for pj in courrier.pieceJointes %}
+                                    <a href="{{ asset('uploads/piece_jointes/' ~ pj.filename) }}" target="_blank" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        <div>
+                                            {% set extension = pj.filename|split('.')|last|lower %}
+                                            {% if extension == 'pdf' %}
+                                                <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i>
+                                            {% elseif extension in ['jpg', 'jpeg', 'png'] %}
+                                                <i class="bi bi-file-earmark-image-fill text-primary me-2"></i>
+                                            {% else %}
+                                                <i class="bi bi-file-earmark-text-fill text-secondary me-2"></i>
+                                            {% endif %}
+                                            {{ pj.originalName }}
+                                        </div>
+                                        <span class="badge bg-light text-dark border"><i class="bi bi-download"></i></span>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

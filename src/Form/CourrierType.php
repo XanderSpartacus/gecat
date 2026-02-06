@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Courrier;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -107,8 +108,13 @@ class CourrierType extends AbstractType
                 'placeholder' => 'Sélectionnez...',
                 'attr' => ['class' => 'form-control'],
             ])
-
-        ;
+            ->add('pieceJointes', CollectionType::class, [
+                'entry_type' => PieceJointeType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'label' => false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

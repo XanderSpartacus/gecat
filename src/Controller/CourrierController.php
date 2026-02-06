@@ -5,27 +5,32 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Courrier;
+use App\Entity\PieceJointe;
 use App\Form\CourrierType;
 use App\Repository\CourrierRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Dompdf\Dompdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[isGranted('ROLE_ADMIN')]
 class CourrierController extends AbstractController
 {
     #[Route('/courrier/new', name: 'app_courrier_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $courrier = new Courrier();
         $form = $this->createForm(CourrierType::class, $courrier);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->handleFiles($form, $slugger);
+
             $entityManager->persist($courrier);
             $entityManager->flush();
 
@@ -112,12 +117,19 @@ class CourrierController extends AbstractController
     }
 
     #[Route('/courrier/{id}/edit', name: 'app_courrier_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Courrier $courrier, EntityManagerInterface $entityManager): Response
+    public function edit(
+        Request $request,
+        Courrier $courrier,
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger
+    ): Response
     {
         $form = $this->createForm(CourrierType::class, $courrier);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->handleFiles($form, $slugger);
+
             $entityManager->flush();
             $this->addFlash('warning', 'Courrier mis à jour avec succès !');
 
@@ -170,6 +182,33 @@ class CourrierController extends AbstractController
         return $this->json($values);
     }
 
+    private function handleFiles($form, SluggerInterface $slugger): void
+    {
+        $pieceJointeForms = $form->get('pieceJointes');
 
+        foreach ($pieceJointeForms as $pjForm) {
+            $file = $pjForm->get('file')->getData();
+
+            if($file) {
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFileName = $slugger->slug($originalName);
+                $newFileName = $safeFileName . '-' . uniqid('', true) . '.' . $file->guessExtension();
+
+                try {
+                    $file->move(
+                        $this->getParameter('piece_jointe_direcory'),
+                        $newFileName
+                    );
+
+                    /** @var PieceJointe $pieceJointe */
+                    $pieceJointe = $pjForm->getData();
+                    $pieceJointe->setFilename($newFileName);
+                    $pieceJointe->setOriginalName($file->getClientOriginalName());
+                } catch (FileException $e){
+
+                }
+            }
+        }
+    }
 
 }
